@@ -21,14 +21,16 @@ func main() {
 	}
 }
 func run() error {
+
+	privateKey, err := crypto.LoadECDSA("zblock/accounts/kennedy.ecdsa")
+	if err != nil {
+		return fmt.Errorf("unable to laod private key for node: %w", err)
+	}
+
 	tx := Tx{
 		FromID: "Bill",
 		ToID:   "Aaron",
 		Value:  1000,
-	}
-	privateKey, err := crypto.LoadECDSA("zblock/accounts/kennedy.ecdsa")
-	if err != nil {
-		return fmt.Errorf("unable to laod private key for node: %w", err)
 	}
 
 	// get a slice of byte easily of tx
@@ -46,7 +48,17 @@ func run() error {
 	}
 
 	// printout the signature
-	fmt.Println(hexutil.Encode(sig))
+	fmt.Println("SIG:", hexutil.Encode(sig))
+	// ==================================================================================
+	// OVER THE WIRE
 
+	// returns the public key from the signature - using the ECDSA
+	publicKey, err := crypto.SigToPub(v, sig)
+	if err != nil {
+		return fmt.Errorf("unable to pub: %w", err)
+	}
+
+	// return the ethereum common address := maybe by returning the first twenty bytes
+	fmt.Println("PUB", crypto.PubkeyToAddress(*publicKey).String())
 	return nil
 }
