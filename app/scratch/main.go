@@ -120,3 +120,12 @@ func run() error {
 // get the 32byte hash of the byte slice (using keccak or sha256)
 // then sign the 32 byte hash with your private key
 // then forward it to the node for processing
+
+// On the node side
+// 1. You can check if the signature is properly structured - since you dont have the private key
+
+//===================Structure of the signature================================
+// It comes in three (3) parts
+// 1. R value (second 32 byte is a point on the elliptic curve(called secp256k1) )
+// 2. S value (first 32 byte is a point on the elliptic curve(called secp256k1) )
+// 3. V value
